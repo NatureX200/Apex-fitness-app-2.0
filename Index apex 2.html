@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>APEX</title>
+
+<!-- ── PWA / HOME SCREEN META ── -->
+<meta name="application-name" content="APEX">
+<meta name="apple-mobile-web-app-title" content="APEX">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#050608">
+<meta name="description" content="APEX — AI Personal Fitness Coach. Your body. Your data. Your edge.">
+
+<!-- ── MANIFEST ── -->
+<link rel="manifest" href="manifest.json">
+
+<!-- ── APPLE TOUCH ICONS ── -->
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icon-180.png">
+<link rel="apple-touch-icon" sizes="120x120" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+
+<!-- ── FONTS ── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;500;600;700&family=Barlow:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<!-- ── SAFE AREA FOR NOTCH / HOME INDICATOR ── -->
+<style>
+  body { padding-bottom: env(safe-area-inset-bottom); }
+  .bnav { padding-bottom: calc(6px + env(safe-area-inset-bottom)); height: calc(76px + env(safe-area-inset-bottom)); }
+</style>
+<style>
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   TOKENS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+:root {
+  --void:   #050608;
+  --deep:   #0A0B0E;
+  --dark:   #0F1115;
+  --steel:  #161820;
+  --panel:  #1C1F28;
+  --border: #252830;
+  --bord2:  #2E3240;
+  --muted:  #4A4F60;
+  --sub:    #7A8099;
+  --silver: #A8B0C8;
+  --white:  #E8ECF5;
+  --gold:   #C9A84C;
+  --gold2:  #E8C86A;
+  --goldd:  #8B6B28;
+  --elec:   #4FC3F7;
+  --red:    #E53935;
+  --green:  #4CAF50;
+  --amber:  #FF8F00;
+  --purple: #9575CD;
+  --r: 14px;
+  --rp: 999px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-family:'Barlow',sans-serif;background:var(--void);color:var(--white);font-size:15px;overflow-x:hidden;min-height:100vh;line-height:1.5}
+button,input{font-family:inherit;border:none;outline:none;background:none;cursor:pointer}
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-thumb{background:var(--bord2);border-radius:2px}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SPLASH
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#splash{position:fixed;inset:0;z-index:400;background:var(--void);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:spOut 0.8s ease 3.2s forwards;overflow:hidden}
+@keyframes spOut{to{opacity:0;pointer-events:none}}
+.sp-burst{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(ellipse,rgba(201,168,76,0.06) 0%,transparent 70%);animation:burst 2s ease infinite}
+@keyframes burst{0%,100%{transform:scale(0.9);opacity:0.5}50%{transform:scale(1.1);opacity:1}}
+.sp-scan{position:absolute;width:100%;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(201,168,76,0.4) 50%,transparent 100%);animation:scan 3s ease infinite}
+@keyframes scan{0%{top:20%;opacity:0}20%{opacity:1}80%{opacity:1}100%{top:80%;opacity:0}}
+.sp-content{display:flex;flex-direction:column;align-items:center;position:relative;z-index:2}
+.sp-emblem{width:80px;height:80px;margin-bottom:24px;opacity:0;animation:embIn 1s cubic-bezier(0.16,1,0.3,1) 0.4s forwards}
+@keyframes embIn{from{opacity:0;transform:scale(0.5) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.sp-title{font-family:'Bebas Neue',sans-serif;font-size:72px;letter-spacing:10px;color:var(--white);line-height:1;opacity:0;animation:titleIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.8s forwards;text-shadow:0 0 60px rgba(201,168,76,0.2)}
+@keyframes titleIn{from{opacity:0;transform:translateY(16px);letter-spacing:20px}to{opacity:1;transform:translateY(0);letter-spacing:10px}}
+.sp-gold{color:var(--gold)}
+.sp-sub{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:6px;color:var(--muted);text-transform:uppercase;font-weight:300;margin-top:8px;opacity:0;animation:fi 0.6s ease 1.3s forwards}
+@keyframes fi{to{opacity:1}}
+.sp-line{width:160px;height:1px;background:var(--border);margin-top:32px;position:relative;overflow:hidden;opacity:0;animation:fi 0.5s ease 1.5s forwards}
+.sp-line::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:translateX(-100%);animation:ls 1.5s ease 1.7s forwards}
+@keyframes ls{to{transform:translateX(100%)}}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   APP SHELL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#app{opacity:0;animation:fi 0.6s ease 3.8s forwards;padding-bottom:76px;min-height:100vh}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;height:60px;background:rgba(5,6,8,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;justify-content:space-between;box-shadow:inset 0 1px 0 rgba(201,168,76,0.15)}
+.tb-logo{display:flex;align-items:center;gap:10px}
+.tb-hex{width:28px;height:28px;background:linear-gradient(135deg,var(--gold) 0%,var(--goldd) 100%);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.tb-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;color:var(--white)}
+.tb-name b{color:var(--gold)}
+.tb-right{display:flex;align-items:center;gap:8px}
+.tb-btn{width:34px;height:34px;border-radius:8px;background:var(--steel);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;transition:all 0.15s;position:relative}
+.tb-btn:hover{border-color:var(--goldd)}
+.tb-av{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--goldd),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;color:var(--void);letter-spacing:1px;transition:transform 0.15s}
+.tb-av:hover{transform:scale(1.06)}
+.rdot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--red);border-radius:50%;border:1.5px solid var(--void)}
+
+/* SCREENS */
+.screen{display:none}
+.screen.active{display:block}
+#screen-coach{padding:0}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:100;height:76px;background:rgba(5,6,8,0.96);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 4px 6px;box-shadow:0 -1px 0 rgba(201,168,76,0.08)}
+.bt{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border-radius:10px;border:none;background:none;transition:background 0.15s;position:relative}
+.bt:hover{background:var(--steel)}
+.bt-i{font-size:20px;line-height:1;filter:grayscale(0.3)}
+.bt-l{font-family:'Oswald',sans-serif;font-size:9px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--muted);transition:color 0.15s}
+.bt.active .bt-l{color:var(--gold)}
+.bt.active .bt-i{filter:none}
+.bt-line{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:2px;background:var(--gold);border-radius:1px;display:none}
+.bt.active .bt-line{display:block}
+.bt-pip{position:absolute;top:6px;right:calc(50% - 14px);width:6px;height:6px;border-radius:50%;background:var(--red);border:1.5px solid var(--void)}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SHARED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.eyebrow{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.pg-title{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:3px;color:var(--white);line-height:1;margin-bottom:20px}
+.pg-title b{color:var(--gold)}
+.sec-label{font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--silver);margin-bottom:12px}
+.card{background:var(--steel);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:10px;transition:border-color 0.2s,transform 0.2s;position:relative;overflow:hidden}
+.card:hover{border-color:var(--bord2);transform:translateY(-1px)}
+.gold-line::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--gold),var(--goldd));border-radius:3px 0 0 3px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:var(--rp);font-family:'Oswald',sans-serif;font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase}
+.pl-gold{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:var(--gold2)}
+.pl-elec{background:rgba(79,195,247,0.1);border:1px solid rgba(79,195,247,0.25);color:var(--elec)}
+.pl-red{background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.25);color:#EF5350}
+.pl-green{background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#66BB6A}
+.ldot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:ld 1.3s ease infinite}
+@keyframes ld{0%,100%{opacity:1}55%{opacity:0.2}}
+.rv{opacity:0;transform:translateY(12px);animation:rvUp 0.5s cubic-bezier(0.16,1,0.3,1) forwards}
+@keyframes rvUp{to{opacity:1;transform:translateY(0)}}
+.page{padding:0 16px}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   DASHBOARD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.dash-hero{position:relative;background:var(--deep);overflow:hidden;padding:32px 20px 28px;border-bottom:1px solid var(--border)}
+.dash-hero::before{content:'';position:absolute;top:-40px;right:-60px;width:300px;height:300px;background:radial-gradient(ellipse,rgba(201,168,76,0.06) 0%,transparent 70%);pointer-events:none}
+.dash-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--goldd),transparent 60%)}
+.dash-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:var(--rp);padding:5px 14px;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.dash-greeting{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:2px;line-height:1;color:var(--white);text-shadow:0 2px 20px rgba(0,0,0,0.5)}
+.dash-gold{color:var(--gold);display:block;font-size:42px}
+.dash-sub{font-family:'Oswald',sans-serif;font-size:12px;font-weight:300;letter-spacing:3px;text-transform:uppercase;color:var(--sub);margin-top:8px}
+
+.stats-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:10px}
+.stat-block{background:var(--dark);padding:16px 12px 14px;text-align:center;transition:background 0.15s}
+.stat-block:hover{background:var(--steel)}
+.stat-icon{font-size:18px;margin-bottom:8px;opacity:0.8}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--white);line-height:1}
+.stat-unit{font-size:13px;color:var(--sub)}
+.stat-label{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+
+.cal-inner{display:flex;align-items:center;gap:18px}
+.rw{flex-shrink:0;position:relative;width:88px;height:88px}
+.rw svg{width:88px;height:88px;transform:rotate(-90deg)}
+.rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.rp{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--gold);line-height:1}
+.rs{font-family:'Oswald',sans-serif;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:1px}
+.cal-right{flex:1}
+.cv{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:-1px;color:var(--white);line-height:1}
+.ct{font-size:13px;color:var(--sub);margin-top:2px}
+.cbar{height:3px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden}
+.cbf{height:100%;background:linear-gradient(90deg,var(--goldd),var(--gold));border-radius:2px}
+
+.hr-row{display:flex;align-items:center;justify-content:space-between}
+.hrn{font-family:'Bebas Neue',sans-serif;font-size:62px;letter-spacing:-3px;color:var(--white);line-height:1}
+.hrl{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--sub);margin-top:2px}
+.hwave{display:flex;align-items:center;gap:3px}
+.hw{width:3px;border-radius:2px;background:var(--red);animation:hwA 1s ease infinite}
+.hw:nth-child(1){height:8px;animation-delay:0s}.hw:nth-child(2){height:20px;animation-delay:0.08s}
+.hw:nth-child(3){height:40px;animation-delay:0.16s}.hw:nth-child(4){height:15px;animation-delay:0.24s}
+.hw:nth-child(5){height:30px;animation-delay:0.32s}.hw:nth-child(6){height:12px;animation-delay:0.40s}
+.hw:nth-child(7){height:6px;animation-delay:0.48s}
+@keyframes hwA{0%,100%{opacity:0.2;transform:scaleY(0.5)}50%{opacity:1;transform:scaleY(1)}}
+
+.whead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.wlist{display:flex;flex-direction:column}
+.wi{display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--border)}
+.wi:last-child{border-bottom:none;padding-bottom:0}
+.wch{width:24px;height:24px;flex-shrink:0;border-radius:6px;border:1px solid var(--bord2);display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'Oswald',sans-serif}
+.wch.done{background:rgba(201,168,76,0.15);border-color:var(--goldd);color:var(--gold)}
+.wch.next{border-color:var(--elec);box-shadow:0 0 8px rgba(79,195,247,0.2)}
+.wi-info{flex:1}
+.wi-n{font-family:'Oswald',sans-serif;font-size:14px;font-weight:500;letter-spacing:0.5px;color:var(--white)}
+.wi-d{font-size:12px;color:var(--sub);margin-top:2px}
+.wi-s{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;font-weight:400;flex-shrink:0;color:var(--muted)}
+.wi-s.done{color:var(--goldd)}.wi-s.next{color:var(--elec)}
+
+.wchart{display:flex;gap:5px;align-items:flex-end;height:52px;margin-top:12px}
+.wc{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.wb{width:100%;border-radius:3px;background:var(--border);cursor:pointer;transition:opacity 0.15s}
+.wb:hover{opacity:0.7}.wb.done{background:var(--panel);border:1px solid var(--bord2)}.wb.today{background:linear-gradient(180deg,var(--gold),var(--goldd));border:none}
+.wday{font-family:'Oswald',sans-serif;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   FORM TRACKER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.camf{width:100%;aspect-ratio:9/14;background:var(--deep);overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:16px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.cam-vig{position:absolute;inset:0;pointer-events:none;z-index:5;background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 50%,rgba(5,6,8,0.7) 100%)}
+.cam-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 50% 40%,rgba(79,195,247,0.04) 0%,transparent 70%)}
+.cam-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:40px 40px}
+.ccorners{position:absolute;inset:20px;pointer-events:none;z-index:6}
+.cc{position:absolute;width:28px;height:28px;border-color:rgba(201,168,76,0.6);border-style:solid}
+.cc.tl{top:0;left:0;border-width:2px 0 0 2px}.cc.tr{top:0;right:0;border-width:2px 2px 0 0}
+.cc.bl{bottom:0;left:0;border-width:0 0 2px 2px}.cc.br{bottom:0;right:0;border-width:0 2px 2px 0}
+.cam-scan{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(79,195,247,0.4),transparent);z-index:7;pointer-events:none;display:none;animation:scanL 2.5s ease infinite}
+@keyframes scanL{0%{top:10%;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:90%;opacity:0}}
+.posew{position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:3}
+.posew svg{width:50%;height:80%}
+.sj{transition:fill 0.3s}.sj.ok{fill:#4FC3F7;filter:drop-shadow(0 0 6px rgba(79,195,247,0.6))}.sj.warn{fill:var(--amber);filter:drop-shadow(0 0 6px rgba(255,143,0,0.6))}
+.sb{stroke-linecap:round;stroke-linejoin:round;stroke-width:2.5;transition:stroke 0.3s}.sb.ok{stroke:rgba(79,195,247,0.45)}.sb.warn{stroke:rgba(255,143,0,0.65)}
+.cidle{text-align:center;z-index:4;position:relative;padding:20px}
+.cidle-e{font-size:46px;margin-bottom:14px;line-height:1;opacity:0.35}
+.cidle-t{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--silver);margin-bottom:6px}
+.cidle-s{font-size:14px;color:var(--muted);margin-bottom:22px;line-height:1.7;max-width:220px}
+.btn-start{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold) 0%,var(--goldd) 100%);color:var(--void);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;padding:12px 28px;border-radius:var(--r);transition:transform 0.2s,box-shadow 0.2s;border:none;box-shadow:0 4px 20px rgba(201,168,76,0.25)}
+.btn-start:hover{transform:scale(1.04);box-shadow:0 6px 28px rgba(201,168,76,0.4)}
+.cscore-bar{position:absolute;bottom:14px;left:16px;right:16px;z-index:8;background:rgba(5,6,8,0.85);backdrop-filter:blur(16px);border:1px solid var(--bord2);border-radius:12px;padding:12px 16px;display:none;align-items:center;justify-content:space-between}
+.cse{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+.csa{font-size:12px;color:var(--amber);margin-top:3px;font-weight:500}
+.csv{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;color:var(--gold)}
+
+/* Set result demo */
+.set-demo{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}
+.set-row{background:var(--steel);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color 0.2s}
+.set-row:hover{border-color:var(--bord2)}.set-row.exp{border-color:var(--goldd)}
+.set-num{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--gold);flex-shrink:0;width:22px}
+.set-info{flex:1}
+.set-name{font-family:'Oswald',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.5px;color:var(--white)}
+.set-det{font-size:11px;color:var(--sub);margin-top:1px}
+.set-score{flex-shrink:0;text-align:right}
+.set-score-v{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px}
+.s-hi{color:var(--green)}.s-md{color:var(--amber)}.s-lo{color:var(--red)}
+.set-score-l{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.set-expand{display:none;padding:12px 14px;border-top:1px solid var(--border);background:rgba(201,168,76,0.02)}
+.set-row.exp + .set-expand{display:block}
+
+.muscle-map-title{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--sub);margin-bottom:7px}
+.muscle-list{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.mc{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:var(--rp);font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.mc-pri{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);color:var(--gold2)}
+.mc-sec{background:rgba(79,195,247,0.08);border:1px solid rgba(79,195,247,0.2);color:var(--elec)}
+.mc-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+.ebar{display:flex;gap:6px;align-items:center;margin-bottom:7px}
+.ebar-label{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1px;color:var(--sub);width:76px;flex-shrink:0}
+.ebar-track{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.ebar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--goldd),var(--gold))}
+.ebar-val{font-family:'Oswald',sans-serif;font-size:11px;color:var(--gold);width:36px;text-align:right;flex-shrink:0}
+
+.form-tip{background:rgba(229,57,53,0.06);border:1px solid rgba(229,57,53,0.2);border-radius:10px;padding:12px;margin-bottom:10px}
+.form-tip-h{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.form-tip-icon{font-size:15px}
+.form-tip-title{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#EF5350}
+.form-tip-body{font-size:12px;color:var(--sub);line-height:1.6}
+.video-card{background:var(--steel);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.video-thumb{width:56px;height:38px;flex-shrink:0;background:var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.video-title{font-family:'Oswald',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.5px;color:var(--white)}
+.video-sub{font-size:11px;color:var(--sub);margin-top:2px}
+.video-btn{margin-left:auto;flex-shrink:0;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:5px 12px;border-radius:6px;transition:background 0.15s}
+.video-btn:hover{background:rgba(201,168,76,0.2)}
+
+.inj-alert{background:rgba(229,57,53,0.06);border:1px solid rgba(229,57,53,0.25);border-radius:12px;padding:14px;display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.inj-icon{width:40px;height:40px;flex-shrink:0;background:rgba(229,57,53,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.inj-title{font-family:'Oswald',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.5px;color:#EF5350}
+.inj-body{font-size:12px;color:var(--sub);margin-top:3px;line-height:1.65}
+.inj-advice{margin-top:8px;padding:8px 10px;background:rgba(229,57,53,0.06);border-radius:8px;font-size:12px;color:var(--silver);line-height:1.6}
+
+.fexl{display:flex;flex-direction:column;gap:8px}
+.fex{display:flex;align-items:center;gap:14px;background:var(--steel);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all 0.18s}
+.fex:hover{border-color:var(--bord2);transform:translateX(3px)}.fex.active{border-color:var(--goldd);background:rgba(201,168,76,0.06)}
+.fex-e{font-size:26px;flex-shrink:0}
+.fex-n{font-family:'Oswald',sans-serif;font-size:14px;font-weight:500;letter-spacing:0.5px;color:var(--white)}
+.fex-c{font-size:12px;color:var(--sub);margin-top:2px}
+.acc-v{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;flex-shrink:0}
+.ahi{color:var(--elec)}.amd{color:var(--amber)}.alo{color:var(--red)}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   NUTRITION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.nut-hero{background:var(--dark);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r);padding:22px;margin-bottom:10px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden}
+.nut-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:150px;height:150px;border-radius:50%;background:radial-gradient(ellipse,rgba(201,168,76,0.05) 0%,transparent 70%);pointer-events:none}
+.nring{flex-shrink:0;position:relative;width:90px;height:90px}
+.nring svg{width:90px;height:90px;transform:rotate(-90deg)}
+.nrc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.np{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--gold);line-height:1}
+.nps{font-family:'Oswald',sans-serif;font-size:8px;color:var(--muted);letter-spacing:2px;margin-top:1px}
+.nl{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.nv{font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--white);letter-spacing:-1px;line-height:1}
+.nt{font-size:13px;color:var(--sub);margin-top:3px}
+
+.m2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.mbox{background:var(--steel);border:1px solid var(--border);border-radius:12px;padding:16px;transition:transform 0.15s,border-color 0.15s}
+.mbox:hover{transform:translateY(-2px);border-color:var(--bord2)}
+.mtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.mi{font-size:20px}
+.ml{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--sub)}
+.mn{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--white);letter-spacing:-0.5px;line-height:1}
+.mu{font-family:'Oswald',sans-serif;font-size:14px;font-weight:300;color:var(--sub)}
+.mo{font-size:11px;color:var(--muted);margin-top:3px}
+.mb{height:3px;background:var(--border);border-radius:2px;margin-top:9px;overflow:hidden}
+.mbf{height:100%;border-radius:2px}
+.mbp{background:var(--elec)}.mbc{background:#7B9EF5}.mbf2{background:var(--amber)}.mbw{background:var(--purple)}
+
+.mstack{display:flex;flex-direction:column;gap:8px}
+.mc2{background:var(--steel);border:1px solid var(--border);border-radius:var(--r);padding:18px;transition:transform 0.15s,border-color 0.15s}
+.mc2:hover{transform:translateY(-1px);border-color:var(--bord2)}
+.mc2.up{border-color:rgba(79,195,247,0.2);background:rgba(79,195,247,0.03)}
+.mctop{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.mcl{display:flex;align-items:center;gap:10px}
+.mce{font-size:24px}
+.mct{font-family:'Oswald',sans-serif;font-size:14px;font-weight:500;letter-spacing:0.5px;color:var(--white)}
+.mcd{font-size:12px;color:var(--muted);margin-top:2px}
+.mck{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:1px}
+.mfl{display:flex;flex-direction:column;gap:6px}
+.mf{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--sub);padding-bottom:6px;border-bottom:1px solid var(--border)}
+.mf:last-child{border:none;padding:0}
+.mfn{color:var(--silver);font-weight:400}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PROGRAMS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.prog-list{display:flex;flex-direction:column;gap:9px}
+.prog-card{border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.2s;border:1px solid var(--border);background:var(--steel)}
+.prog-card:hover{transform:scale(1.005)}
+.prog-top{padding:18px;display:flex;align-items:center;gap:14px}
+.prog-icon{width:50px;height:50px;flex-shrink:0;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.prog-info{flex:1}
+.prog-num{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:3px}
+.prog-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--white);line-height:1}
+.prog-tagline{font-size:12px;color:var(--sub);margin-top:3px}
+.prog-arr{font-size:20px;transition:transform 0.2s;flex-shrink:0}
+.prog-card.open .prog-arr{transform:rotate(90deg)}
+.prog-body{display:none;border-top-width:1px;border-top-style:solid}
+.prog-card.open .prog-body{display:block}
+.prog-body-inner{padding:14px}
+
+.pb-tabs{display:flex;gap:3px;margin-bottom:12px;background:var(--void);border-radius:8px;padding:3px}
+.pb-tab{flex:1;padding:7px 4px;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-radius:6px;transition:all 0.15s}
+.pb-content{display:none}.pb-content.active{display:block}
+
+.day-list{display:flex;flex-direction:column;gap:5px}
+.day-row{background:var(--void);border:1px solid var(--border);border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:12px}
+.day-n{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;width:20px;flex-shrink:0}
+.day-info{flex:1}
+.day-name{font-family:'Oswald',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.5px;color:var(--white)}
+.day-ex{font-size:11px;color:var(--muted);margin-top:2px}
+.day-badge{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:var(--rp);flex-shrink:0}
+
+.nt-list{display:flex;flex-direction:column;gap:5px}
+.nt-row{background:var(--void);border:1px solid var(--border);border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:12px}
+.nt-icon{font-size:18px;flex-shrink:0}
+.nt-info{flex:1}
+.nt-name{font-family:'Oswald',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.5px;color:var(--white)}
+.nt-desc{font-size:11px;color:var(--sub);margin-top:2px}
+.nt-val{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;flex-shrink:0}
+
+.ov-card{background:var(--void);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:6px}
+.ov-label{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.ov-text{font-size:13px;color:var(--sub);line-height:1.6}
+
+/* Athlete sports */
+.sports-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.sport-btn{background:var(--void);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.15s}
+.sport-btn:hover{border-color:var(--bord2)}
+.sport-btn.active{border-color:var(--goldd);background:rgba(201,168,76,0.06)}
+.sport-em{font-size:24px;margin-bottom:5px}
+.sport-nm{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub)}
+.sport-btn.active .sport-nm{color:var(--gold)}
+.sport-detail{display:none;margin-top:10px;background:var(--void);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sport-detail.active{display:block}
+.sd-title{font-family:'Oswald',sans-serif;font-size:13px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--white);margin-bottom:8px}
+.sd-items{display:flex;flex-direction:column;gap:5px}
+.sd-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--sub);line-height:1.5}
+.sd-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:7px}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   COACH
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.cowrap{display:flex;flex-direction:column;height:calc(100vh - 60px - 76px)}
+.cobanner{padding:16px 18px 14px;border-bottom:1px solid var(--border);background:var(--deep);flex-shrink:0;position:relative;overflow:hidden}
+.cobanner::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--goldd),transparent 50%)}
+.cotop{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.coname{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--white)}
+.cosub{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:300}
+.cmsgs{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.cmsgs::-webkit-scrollbar{width:2px}
+.cmsgs::-webkit-scrollbar-thumb{background:var(--bord2);border-radius:2px}
+.msg{max-width:88%}.msg.bot{align-self:flex-start}.msg.user{align-self:flex-end}
+.mw{font-family:'Oswald',sans-serif;font-size:10px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.msg.user .mw{text-align:right}
+.mb2{font-size:14px;line-height:1.7;padding:13px 15px;border-radius:12px}
+.msg.bot .mb2{background:var(--steel);border:1px solid var(--border);border-bottom-left-radius:3px;color:var(--silver)}
+.msg.user .mb2{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-bottom-right-radius:3px;color:var(--white)}
+.hl{background:rgba(201,168,76,0.15);color:var(--gold2);padding:1px 6px;border-radius:4px;font-weight:600;font-size:13px}
+.tbub{background:var(--steel);border:1px solid var(--border);border-radius:12px;border-bottom-left-radius:3px;padding:13px 16px;display:flex;gap:5px;align-items:center}
+.td{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:tdb 1.2s ease infinite}
+.td:nth-child(2){animation-delay:0.2s}.td:nth-child(3){animation-delay:0.4s}
+@keyframes tdb{0%,60%,100%{transform:translateY(0);opacity:0.3}30%{transform:translateY(-4px);opacity:1}}
+.qarea{padding:10px 18px;display:flex;gap:7px;overflow-x:auto;border-top:1px solid var(--border);background:var(--deep);flex-shrink:0}
+.qarea::-webkit-scrollbar{display:none}
+.qc{flex-shrink:0;background:var(--steel);border:1px solid var(--border);border-radius:var(--rp);padding:7px 14px;font-size:12px;font-weight:400;color:var(--silver);white-space:nowrap;transition:all 0.15s;font-family:'Oswald',sans-serif;letter-spacing:1px}
+.qc:hover{border-color:var(--goldd);color:var(--gold);background:rgba(201,168,76,0.08)}
+.cbar{padding:12px 18px;display:flex;gap:10px;align-items:center;background:var(--deep);border-top:1px solid var(--border);flex-shrink:0}
+.cin{flex:1;background:var(--steel);border:1px solid var(--border);border-radius:10px;padding:11px 16px;font-size:14px;color:var(--white);transition:border-color 0.2s}
+.cin::placeholder{color:var(--muted)}.cin:focus{border-color:var(--goldd)}
+.csend{width:42px;height:42px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--gold) 0%,var(--goldd) 100%);display:flex;align-items:center;justify-content:center;transition:transform 0.15s,box-shadow 0.15s}
+.csend:hover{transform:scale(1.06);box-shadow:0 4px 16px rgba(201,168,76,0.3)}
+.csend svg{width:16px;height:16px;fill:var(--void)}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PROFILE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.phero{background:linear-gradient(160deg,var(--deep) 0%,var(--dark) 100%);border-bottom:1px solid var(--border);padding:28px 18px;text-align:center;position:relative;overflow:hidden}
+.phero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(201,168,76,0.06) 0%,transparent 70%);pointer-events:none}
+.pav{width:74px;height:74px;border-radius:14px;background:linear-gradient(135deg,var(--gold) 0%,var(--goldd) 100%);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--void);margin:0 auto 14px;box-shadow:0 8px 24px rgba(201,168,76,0.2);position:relative;z-index:1}
+.pname{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--white);margin-bottom:8px}
+.psr{display:flex;margin-top:18px;border-top:1px solid var(--border);padding-top:18px}
+.ps{flex:1;text-align:center;border-right:1px solid var(--border)}.ps:last-child{border:none}
+.psv{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--gold)}
+.psl{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+.sg{margin-bottom:18px;padding:0 16px}
+.sgl{font-family:'Oswald',sans-serif;font-size:10px;font-weight:400;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.sr{background:var(--steel);border:1px solid var(--border);border-radius:12px;padding:14px 15px;display:flex;align-items:center;gap:12px;margin-bottom:7px;cursor:pointer;transition:all 0.15s}
+.sr:last-child{margin-bottom:0}.sr:hover{border-color:var(--goldd);transform:translateX(2px)}
+.si{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.sn{font-family:'Oswald',sans-serif;font-size:14px;font-weight:400;letter-spacing:0.5px;flex:1;color:var(--silver)}
+.sv{font-size:12px;color:var(--muted);text-align:right}
+.sa{color:var(--muted);font-size:16px;margin-left:6px}
+.tog{width:42px;height:24px;border-radius:12px;background:linear-gradient(135deg,var(--gold) 0%,var(--goldd) 100%);position:relative;cursor:pointer;flex-shrink:0;transition:all 0.2s;box-shadow:0 2px 8px rgba(201,168,76,0.2)}
+.tog::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:var(--void);top:3px;right:3px;transition:transform 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.5)}
+.tog.off{background:var(--border);box-shadow:none}.tog.off::after{background:var(--muted);transform:translateX(-18px)}
+
+</style>
+</head>
+<body>
+
+<!-- ━━━━━━━━━━━━━━ SPLASH ━━━━━━━━━━━━━━ -->
+<div id="splash">
+  <div class="sp-burst"></div>
+  <div class="sp-scan"></div>
+  <div class="sp-content">
+    <div class="sp-emblem">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="eG" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#E8C86A"/><stop offset="100%" stop-color="#8B6B28"/>
+          </linearGradient>
+        </defs>
+        <path d="M40 4L72 22V58L40 76L8 58V22L40 4Z" fill="none" stroke="url(#eG)" stroke-width="1.5" opacity="0.6"/>
+        <path d="M40 14L62 26V50L40 62L18 50V26L40 14Z" fill="rgba(201,168,76,0.06)" stroke="url(#eG)" stroke-width="1"/>
+        <path d="M46 16L32 40H42L36 64L58 36H44L46 16Z" fill="url(#eG)"/>
+      </svg>
+    </div>
+    <div class="sp-title">AP<span class="sp-gold">EX</span></div>
+    <div class="sp-sub">Dark Edition &nbsp;·&nbsp; AI Personal Coach</div>
+    <div class="sp-line"></div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━ APP ━━━━━━━━━━━━━━ -->
+<div id="app">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="tb-logo">
+      <div class="tb-hex">⚡</div>
+      <div class="tb-name">AP<b>EX</b></div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-btn">🔔<div class="rdot"></div></div>
+      <div class="tb-av" onclick="switchTab('profile',document.querySelectorAll('.bt')[4])">JD</div>
+    </div>
+  </header>
+
+  <!-- ━━━━━━━━━━━━━━ DASHBOARD ━━━━━━━━━━━━━━ -->
+  <div id="screen-dashboard" class="screen active">
+
+    <div class="dash-hero rv" style="--d:0s">
+      <div class="dash-tag"><span>⚡</span> Day 18 &nbsp;·&nbsp; Phase II &nbsp;·&nbsp; On Track</div>
+      <div class="dash-greeting">GOOD MORNING
+        <span class="dash-gold">JAMES.</span>
+      </div>
+      <div class="dash-sub">Hypertrophy Protocol &nbsp;·&nbsp; Push Day A</div>
+    </div>
+
+    <div class="stats-strip rv" style="--d:0.06s">
+      <div class="stat-block"><div class="stat-icon">🎯</div><div class="stat-val">87<span class="stat-unit">%</span></div><div class="stat-label">Adherence</div></div>
+      <div class="stat-block"><div class="stat-icon">⚡</div><div class="stat-val">+3.2<span class="stat-unit">kg</span></div><div class="stat-label">Gained</div></div>
+      <div class="stat-block"><div class="stat-icon">🔬</div><div class="stat-val">14<span class="stat-unit">%</span></div><div class="stat-label">Body Fat</div></div>
+    </div>
+
+    <div class="page">
+      <div class="card gold-line rv" style="--d:0.10s">
+        <div class="eyebrow" style="margin-bottom:14px">🍽️ &nbsp;Daily Calories</div>
+        <div class="cal-inner">
+          <div class="rw">
+            <svg viewBox="0 0 88 88">
+              <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#C9A84C"/><stop offset="100%" stop-color="#E8C86A"/></linearGradient></defs>
+              <circle fill="none" stroke="#1C1F28" stroke-width="7" cx="44" cy="44" r="36"/>
+              <circle fill="none" stroke="url(#rg)" stroke-width="7" stroke-linecap="round" cx="44" cy="44" r="36" stroke-dasharray="226" stroke-dashoffset="58"/>
+            </svg>
+            <div class="rc"><div class="rp">74%</div><div class="rs">TODAY</div></div>
+          </div>
+          <div class="cal-right">
+            <div class="cv">2,218</div>
+            <div class="ct">of 3,000 kcal &nbsp;·&nbsp; 782 remaining</div>
+            <div class="cbar"><div class="cbf" style="width:74%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card rv" style="--d:0.14s">
+        <div class="eyebrow" style="margin-bottom:12px">❤️ &nbsp;Heart Rate</div>
+        <div class="hr-row">
+          <div><div class="hrn">72</div><div class="hrl">BPM &nbsp;·&nbsp; Resting</div></div>
+          <div class="hwave"><div class="hw"></div><div class="hw"></div><div class="hw"></div><div class="hw"></div><div class="hw"></div><div class="hw"></div><div class="hw"></div></div>
+        </div>
+      </div>
+
+      <div class="card gold-line rv" style="--d:0.18s">
+        <div class="whead">
+          <div>
+            <div class="eyebrow">💪 &nbsp;Today's Workout</div>
+            <div class="sec-label" style="margin-bottom:2px">Push Day A</div>
+            <div style="font-size:12px;color:var(--sub)">6 exercises &nbsp;·&nbsp; ~55 min</div>
+          </div>
+          <div class="pill pl-gold">4 / 6</div>
+        </div>
+        <div class="wlist">
+          <div class="wi"><div class="wch done">✓</div><div class="wi-info"><div class="wi-n">Bench Press</div><div class="wi-d">4 × 8 &nbsp;·&nbsp; 80 kg</div></div><div class="wi-s done">Done</div></div>
+          <div class="wi"><div class="wch done">✓</div><div class="wi-info"><div class="wi-n">Incline DB Press</div><div class="wi-d">3 × 10 &nbsp;·&nbsp; 28 kg</div></div><div class="wi-s done">Done</div></div>
+          <div class="wi"><div class="wch next"></div><div class="wi-info"><div class="wi-n">Overhead Press</div><div class="wi-d">4 × 8 &nbsp;·&nbsp; 55 kg</div></div><div class="wi-s next">Up Next →</div></div>
+          <div class="wi"><div class="wch"></div><div class="wi-info"><div class="wi-n">Lateral Raises</div><div class="wi-d">4 × 15 &nbsp;·&nbsp; 14 kg</div></div><div class="wi-s">—</div></div>
+        </div>
+      </div>
+
+      <div class="card rv" style="--d:0.22s;margin-bottom:28px">
+        <div class="eyebrow" style="margin-bottom:4px">📊 &nbsp;Weekly Volume</div>
+        <div class="sec-label">24,800 <span style="font-weight:400;color:var(--sub);font-size:13px;letter-spacing:0">kg lifted</span></div>
+        <div class="wchart">
+          <div class="wc"><div class="wb done" style="height:55%"></div><div class="wday">M</div></div>
+          <div class="wc"><div class="wb done" style="height:72%"></div><div class="wday">T</div></div>
+          <div class="wc"><div class="wb done" style="height:46%"></div><div class="wday">W</div></div>
+          <div class="wc"><div class="wb done" style="height:88%"></div><div class="wday">T</div></div>
+          <div class="wc"><div class="wb done" style="height:62%"></div><div class="wday">F</div></div>
+          <div class="wc"><div class="wb today" style="height:94%"></div><div class="wday">S</div></div>
+          <div class="wc"><div class="wb" style="height:18%"></div><div class="wday">S</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━ FORM TRACKER ━━━━━━━━━━━━━━ -->
+  <div id="screen-form" class="screen">
+
+    <div style="padding:24px 16px 0" class="rv" style="--d:0s">
+      <div class="eyebrow">🤖 &nbsp;Live AI Analysis</div>
+      <div class="pg-title">FORM<br><b>TRACKER</b></div>
+    </div>
+
+    <!-- Camera -->
+    <div class="camf rv" style="--d:0.06s">
+      <div class="cam-glow"></div><div class="cam-grid"></div>
+      <div class="ccorners"><div class="cc tl"></div><div class="cc tr"></div><div class="cc bl"></div><div class="cc br"></div></div>
+      <div class="cam-vig"></div>
+      <div class="cam-scan" id="camScan"></div>
+      <div class="posew" id="posew">
+        <svg viewBox="0 0 120 260">
+          <circle class="sj ok" cx="60" cy="18" r="11"/>
+          <line class="sb ok" x1="60" y1="29" x2="60" y2="50"/>
+          <line class="sb ok" x1="22" y1="50" x2="98" y2="50"/>
+          <line class="sb warn" x1="22" y1="50" x2="12" y2="95"/><line class="sb warn" x1="12" y1="95" x2="6" y2="138"/>
+          <line class="sb ok" x1="98" y1="50" x2="108" y2="95"/><line class="sb ok" x1="108" y1="95" x2="114" y2="138"/>
+          <line class="sb ok" x1="60" y1="50" x2="60" y2="128"/>
+          <line class="sb ok" x1="36" y1="128" x2="84" y2="128"/>
+          <line class="sb ok" x1="36" y1="128" x2="32" y2="188"/><line class="sb ok" x1="32" y1="188" x2="30" y2="250"/>
+          <line class="sb ok" x1="84" y1="128" x2="88" y2="188"/><line class="sb ok" x1="88" y1="188" x2="90" y2="250"/>
+          <circle class="sj ok" cx="22" cy="50" r="5"/>
+          <circle class="sj warn" cx="12" cy="95" r="6"/><circle class="sj warn" cx="6" cy="138" r="5"/>
+          <circle class="sj ok" cx="98" cy="50" r="5"/><circle class="sj ok" cx="108" cy="95" r="5"/><circle class="sj ok" cx="114" cy="138" r="5"/>
+          <circle class="sj ok" cx="60" cy="128" r="5"/><circle class="sj ok" cx="36" cy="128" r="5"/><circle class="sj ok" cx="84" cy="128" r="5"/>
+          <circle class="sj ok" cx="32" cy="188" r="5"/><circle class="sj ok" cx="88" cy="188" r="5"/>
+        </svg>
+      </div>
+      <div class="cidle" id="camIdle">
+        <div class="cidle-e">🎥</div>
+        <div class="cidle-t">AI FORM ANALYSIS</div>
+        <div class="cidle-s">Point your camera — APEX tracks every joint and corrects your form in real-time</div>
+        <button class="btn-start" onclick="startTracking()">▶ START TRACKING</button>
+      </div>
+      <div class="cscore-bar" id="cscoreBar">
+        <div><div class="cse">Form Score</div><div class="csa">⚠️ Left elbow is flaring out</div></div>
+        <div class="csv">82%</div>
+      </div>
+    </div>
+
+    <div class="page">
+      <!-- Set result demo -->
+      <div class="rv" style="--d:0.08s">
+        <div class="eyebrow" style="margin-bottom:10px">📋 &nbsp;Set Results — Tap to Review</div>
+        <div class="set-demo">
+
+          <!-- Set 1 — perfect -->
+          <div class="set-row" onclick="toggleSet(this)">
+            <div class="set-num">1</div>
+            <div class="set-info"><div class="set-name">Bench Press</div><div class="set-det">8 reps · 80 kg · 62 sec</div></div>
+            <div class="set-score"><div class="set-score-v s-hi">96%</div><div class="set-score-l">Form</div></div>
+          </div>
+          <div class="set-expand">
+            <div class="muscle-map-title">Muscles Used This Set</div>
+            <div class="muscle-list">
+              <div class="mc mc-pri"><div class="mc-dot"></div>Pectoralis Major</div>
+              <div class="mc mc-pri"><div class="mc-dot"></div>Anterior Deltoid</div>
+              <div class="mc mc-sec"><div class="mc-dot"></div>Triceps</div>
+              <div class="mc mc-sec"><div class="mc-dot"></div>Serratus Anterior</div>
+            </div>
+            <div class="ebar"><div class="ebar-label">Chest</div><div class="ebar-track"><div class="ebar-fill" style="width:82%"></div></div><div class="ebar-val">82%</div></div>
+            <div class="ebar"><div class="ebar-label">Shoulders</div><div class="ebar-track"><div class="ebar-fill" style="width:62%"></div></div><div class="ebar-val">62%</div></div>
+            <div class="ebar"><div class="ebar-label">Triceps</div><div class="ebar-track"><div class="ebar-fill" style="width:44%"></div></div><div class="ebar-val">44%</div></div>
+            <div style="background:rgba(76,175,80,0.06);border:1px solid rgba(76,175,80,0.2);border-radius:8px;padding:10px;margin-top:4px">
+              <div style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#66BB6A;margin-bottom:4px">✅ Excellent Form</div>
+              <div style="font-size:12px;color:var(--sub)">Full range of motion. Elbows at correct angle. Bar path optimal. Keep this up.</div>
+            </div>
+          </div>
+
+          <!-- Set 2 — warning -->
+          <div class="set-row" onclick="toggleSet(this)">
+            <div class="set-num">2</div>
+            <div class="set-info"><div class="set-name">Bench Press</div><div class="set-det">8 reps · 82.5 kg · 58 sec</div></div>
+            <div class="set-score"><div class="set-score-v s-md">78%</div><div class="set-score-l">Form</div></div>
+          </div>
+          <div class="set-expand">
+            <div class="muscle-map-title">Muscles Used This Set</div>
+            <div class="muscle-list">
+              <div class="mc mc-pri"><div class="mc-dot"></div>Pectoralis Major</div>
+              <div class="mc mc-pri"><div class="mc-dot"></div>Anterior Deltoid</div>
+              <div class="mc mc-sec"><div class="mc-dot"></div>Triceps</div>
+            </div>
+            <div class="ebar"><div class="ebar-label">Chest</div><div class="ebar-track"><div class="ebar-fill" style="width:70%"></div></div><div class="ebar-val">70%</div></div>
+            <div class="ebar"><div class="ebar-label">Shoulders</div><div class="ebar-track"><div class="ebar-fill" style="width:75%"></div></div><div class="ebar-val">75%</div></div>
+            <div class="form-tip">
+              <div class="form-tip-h"><div class="form-tip-icon">⚠️</div><div class="form-tip-title">Form Issue Detected</div></div>
+              <div class="form-tip-body">Left elbow flaring 18° beyond optimal range — particularly on reps 5–8. This reduces chest activation and places excess strain on your shoulder joint.</div>
+            </div>
+            <div class="video-card">
+              <div class="video-thumb">▶️</div>
+              <div class="video-info"><div class="video-title">Bench Press — Elbow Positioning</div><div class="video-sub">Correct form reference · 1 min 20 sec</div></div>
+              <div class="video-btn">Watch</div>
+            </div>
+          </div>
+
+          <!-- Set 3 — injury alert -->
+          <div class="set-row" onclick="toggleSet(this)">
+            <div class="set-num">3</div>
+            <div class="set-info"><div class="set-name">Bench Press</div><div class="set-det">5 reps · 85 kg · STOPPED</div></div>
+            <div class="set-score"><div class="set-score-v s-lo">⚠</div><div class="set-score-l">Alert</div></div>
+          </div>
+          <div class="set-expand">
+            <div class="inj-alert">
+              <div class="inj-icon">🚨</div>
+              <div>
+                <div class="inj-title">Injury Risk Detected</div>
+                <div class="inj-body">Abnormal movement at rep 4. Left anterior shoulder — possible rotator cuff strain from elbow flare under max load.</div>
+                <div class="inj-advice"><strong style="color:var(--silver)">APEX Advice:</strong> Stop immediately. Ice left shoulder 15–20 min. Rest 48–72 hours before reloading this movement. Consult a physio if pain persists.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Exercise selector -->
+      <div class="rv" style="--d:0.12s">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;margin-top:8px">
+          <div class="sec-label">Choose Exercise</div>
+          <div class="pill pl-elec"><div class="ldot"></div>&nbsp;Live AI</div>
+        </div>
+        <div class="fexl" style="margin-bottom:28px">
+          <div class="fex active" onclick="pickEx(this)"><div class="fex-e">🏋️</div><div class="fex-info"><div class="fex-n">Bench Press</div><div class="fex-c">Chest &nbsp;·&nbsp; Compound push</div></div><div class="acc-v amd">82%</div></div>
+          <div class="fex" onclick="pickEx(this)"><div class="fex-e">🦾</div><div class="fex-info"><div class="fex-n">Bicep Curl</div><div class="fex-c">Arms &nbsp;·&nbsp; Isolation</div></div><div class="acc-v ahi">96%</div></div>
+          <div class="fex" onclick="pickEx(this)"><div class="fex-e">🦵</div><div class="fex-info"><div class="fex-n">Back Squat</div><div class="fex-c">Legs &nbsp;·&nbsp; Compound</div></div><div class="acc-v alo">71%</div></div>
+          <div class="fex" onclick="pickEx(this)"><div class="fex-e">🚀</div><div class="fex-info"><div class="fex-n">Overhead Press</div><div class="fex-c">Shoulders &nbsp;·&nbsp; Push</div></div><div class="acc-v ahi">94%</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━ NUTRITION ━━━━━━━━━━━━━━ -->
+  <div id="screen-nutrition" class="screen">
+    <div style="padding:24px 16px 0" class="rv" style="--d:0s">
+      <div class="eyebrow">🥦 &nbsp;Fuel Protocol</div>
+      <div class="pg-title">NUTRI<b>TION</b></div>
+    </div>
+    <div class="page">
+      <div class="nut-hero rv" style="--d:0.06s">
+        <div class="nring">
+          <svg viewBox="0 0 90 90">
+            <defs><linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#C9A84C"/><stop offset="100%" stop-color="#E8C86A"/></linearGradient></defs>
+            <circle fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="7" cx="45" cy="45" r="36"/>
+            <circle fill="none" stroke="url(#ng)" stroke-width="7" stroke-linecap="round" cx="45" cy="45" r="36" stroke-dasharray="226" stroke-dashoffset="58" transform="rotate(-90 45 45)"/>
+          </svg>
+          <div class="nrc"><div class="np">74%</div><div class="nps">EATEN</div></div>
+        </div>
+        <div><div class="nl">🔥 Calories</div><div class="nv">2,218</div><div class="nt">of 3,000 kcal &nbsp;·&nbsp; 782 left</div></div>
+      </div>
+
+      <div class="m2 rv" style="--d:0.10s">
+        <div class="mbox"><div class="mtop"><div class="mi">🥩</div><div class="ml">Protein</div></div><div class="mn">164 <span class="mu">g</span></div><div class="mo">of 220 g</div><div class="mb"><div class="mbf mbp" style="width:74%"></div></div></div>
+        <div class="mbox"><div class="mtop"><div class="mi">🍚</div><div class="ml">Carbs</div></div><div class="mn">280 <span class="mu">g</span></div><div class="mo">of 350 g</div><div class="mb"><div class="mbf mbc" style="width:80%"></div></div></div>
+        <div class="mbox"><div class="mtop"><div class="mi">🥑</div><div class="ml">Fat</div></div><div class="mn">58 <span class="mu">g</span></div><div class="mo">of 80 g</div><div class="mb"><div class="mbf mbf2" style="width:72%"></div></div></div>
+        <div class="mbox"><div class="mtop"><div class="mi">💧</div><div class="ml">Water</div></div><div class="mn">2.1 <span class="mu">L</span></div><div class="mo">of 3.5 L</div><div class="mb"><div class="mbf mbw" style="width:60%"></div></div></div>
+      </div>
+
+      <div class="rv" style="--d:0.14s">
+        <div class="sec-label" style="margin-bottom:10px">🍱 &nbsp;Meal Plan</div>
+        <div class="mstack">
+          <div class="mc2"><div class="mctop"><div class="mcl"><div class="mce">🌅</div><div><div class="mct">Breakfast</div><div class="mcd">7:30 AM &nbsp;·&nbsp; ✅ Done</div></div></div><div class="mck">620</div></div><div class="mfl"><div class="mf"><span class="mfn">🥣 Oats + Whey Protein</span><span>412 kcal</span></div><div class="mf"><span class="mfn">🍌 Banana</span><span>89 kcal</span></div><div class="mf"><span class="mfn">🥚 Whole eggs ×3</span><span>210 kcal</span></div></div></div>
+          <div class="mc2"><div class="mctop"><div class="mcl"><div class="mce">☀️</div><div><div class="mct">Lunch</div><div class="mcd">12:30 PM &nbsp;·&nbsp; ✅ Done</div></div></div><div class="mck">840</div></div><div class="mfl"><div class="mf"><span class="mfn">🍗 Chicken Breast 200g</span><span>330 kcal</span></div><div class="mf"><span class="mfn">🍚 Brown Rice 180g</span><span>260 kcal</span></div><div class="mf"><span class="mfn">🥦 Mixed Veg + Olive Oil</span><span>250 kcal</span></div></div></div>
+          <div class="mc2 up"><div class="mctop"><div class="mcl"><div class="mce">🌙</div><div><div class="mct">Dinner</div><div class="mcd" style="color:var(--elec)">7:30 PM &nbsp;·&nbsp; ⏳ Upcoming</div></div></div><div class="mck" style="color:var(--sub)">758</div></div><div class="mfl"><div class="mf"><span class="mfn">🐟 Salmon Fillet 180g</span><span style="color:var(--muted)">350 kcal</span></div><div class="mf"><span class="mfn">🍠 Sweet Potato 200g</span><span style="color:var(--muted)">180 kcal</span></div><div class="mf"><span class="mfn">🥦 Broccoli + EVOO</span><span style="color:var(--muted)">128 kcal</span></div></div></div>
+        </div>
+      </div>
+      <div style="height:28px"></div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━ PROGRAMS ━━━━━━━━━━━━━━ -->
+  <div id="screen-programs" class="screen">
+    <div style="padding:24px 16px 0" class="rv" style="--d:0s">
+      <div class="eyebrow">🏋️ &nbsp;Choose Your Path</div>
+      <div class="pg-title">TRAINING<br><b>PROGRAMS</b></div>
+      <div style="font-size:13px;color:var(--sub);margin-bottom:20px;line-height:1.7">Tap a program — APEX builds your full training schedule, workout plan, and nutrition protocol automatically.</div>
+    </div>
+    <div class="page">
+      <div class="prog-list rv" style="--d:0.06s">
+
+        <!-- 1. HYPERTROPHY -->
+        <div class="prog-card" id="prog-hyp" onclick="toggleProg('hyp')">
+          <div class="prog-top" style="border-left:3px solid var(--gold)">
+            <div class="prog-icon" style="background:rgba(201,168,76,0.12)">💪</div>
+            <div class="prog-info">
+              <div class="prog-num" style="color:var(--gold)">Program 01</div>
+              <div class="prog-name">HYPERTROPHY</div>
+              <div class="prog-tagline">Build muscle. Maximise size and definition.</div>
+            </div>
+            <div class="prog-arr" style="color:var(--gold)">›</div>
+          </div>
+          <div class="prog-body" style="border-color:rgba(201,168,76,0.15)">
+            <div class="prog-body-inner">
+              <div class="pb-tabs">
+                <button class="pb-tab active" style="background:var(--gold);color:var(--void)" onclick="pbTab(event,'hyp','train')">Training</button>
+                <button class="pb-tab" onclick="pbTab(event,'hyp','nut')">Nutrition</button>
+                <button class="pb-tab" onclick="pbTab(event,'hyp','ov')">Overview</button>
+              </div>
+              <div class="pb-content active" data-p="hyp" data-t="train">
+                <div class="day-list">
+                  <div class="day-row"><div class="day-n" style="color:var(--gold)">D1</div><div class="day-info"><div class="day-name">Chest & Triceps</div><div class="day-ex">Bench Press · Incline DB · Cable Fly · Dips · Pushdowns</div></div><div class="day-badge" style="background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.2)">Push</div></div>
+                  <div class="day-row"><div class="day-n" style="color:var(--gold)">D2</div><div class="day-info"><div class="day-name">Back & Biceps</div><div class="day-ex">Deadlift · Pull-Ups · Cable Row · Barbell Curl · Hammer Curl</div></div><div class="day-badge" style="background:rgba(79,195,247,0.08);color:var(--elec);border:1px solid rgba(79,195,247,0.2)">Pull</div></div>
+                  <div class="day-row"><div class="day-n" style="color:var(--gold)">D3</div><div class="day-info"><div class="day-name">Legs</div><div class="day-ex">Squat · Leg Press · Romanian DL · Leg Curl · Calf Raises</div></div><div class="day-badge" style="background:rgba(76,175,80,0.08);color:#66BB6A;border:1px solid rgba(76,175,80,0.2)">Legs</div></div>
+                  <div class="day-row"><div class="day-n" style="color:var(--muted)">D4</div><div class="day-info"><div class="day-name">Rest / Active Recovery</div><div class="day-ex">Light stretching · 20 min walk · Mobility</div></div><div class="day-badge" style="background:rgba(74,79,96,0.3);color:var(--sub);border:1px solid var(--border)">Rest</div></div>
+                  <div class="day-row"><div class="day-n" style="color:var(--gold)">D5</div><div class="day-info"><div class="day-name">Shoulders & Abs</div><div class="day-ex">OHP · Lateral Raises · Rear Delt · Arnold Press · Core</div></div><div class="day-badge" style="background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.2)">Push</div></div>
+                </div>
+              </div>
+              <div class="pb-content" data-p="hyp" data-t="nut">
+                <div class="nt-list">
+                  <div class="nt-row"><div class="nt-icon">🔥</div><div class="nt-info"><div class="nt-name">Daily Calories</div><div class="nt-desc">Caloric surplus for muscle growth</div></div><div class="nt-val" style="color:var(--gold)">3,000+</div></div>
+                  <div class="nt-row"><div class="nt-icon">🥩</div><div class="nt-info"><div class="nt-name">Protein</div><div class="nt-desc">2.2g per kg bodyweight</div></div><div class="nt-val" style="color:var(--elec)">180g+</div></div>
+                  <div class="nt-row"><div class="nt-icon">🍚</div><div class="nt-info"><div class="nt-name">Carbohydrates</div><div class="nt-desc">Primary fuel — high on training days</div></div><div class="nt-val" style="color:var(--amber)">350g</div></div>
+                  <div class="nt-row"><div class="nt-icon">🥑</div><div class="nt-info"><div class="nt-name">Healthy Fat</div><div class="nt-desc">Hormonal health & joint support</div></div><div class="nt-val" style="color:#FFB74D">80g</div></div>
+                  <div class="nt-row"><div class="nt-icon">💧</div><div class="nt-info"><div class="nt-name">Water</div><div class="nt-desc">Essential for muscle protein synthesis</div></div><div class="nt-val" style="color:var(--purple)">3.5L</div></div>
+                </div>
+              </div>
+              <div class="pb-content" data-p="hyp" data-t="ov">
+                <div class="ov-card"><div class="ov-label" style="color:var(--gold)">GOAL</div><div class="ov-text">Maximise muscle hypertrophy through high volume training, progressive overload, and adequate recovery.</div></div>
+                <div class="ov-card"><div class="ov-label" style="color:var(--gold)">REP RANGES</div><div class="ov-text">8–12 reps for compound lifts · 12–15 for isolation · 3–5 working sets per movement</div></div>
+                <div class="ov-card"><div class="ov-label" style="color:var(--gold)">IDEAL FOR</div><div class="ov-text">Anyone wanting lean muscle mass, improved body composition, or training like a physique competitor.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. ENDURANCE -->
+        <div class="prog-card" id="prog-end" onclick="toggleProg('end')">
+          <div class="prog-top" style="border-left:3px solid var(--elec)">
+            <div class="prog-icon" style="background:rgba(79,195,247,0.12)">🏃</div>
+            <div class="prog-info">
+              <div class="prog-num" style="color:var(--elec)">Program 02</div>
+              <div class="prog-name">ENDURANCE</div>
+              <div class="prog-tagline">Go further. Build stamina and cardiovascular power.</div>
+            </div>
+            <div class="prog-arr" style="color:var(--elec)">›</div>
+          </div>
+          <div class="prog-body" style="border-color:rgba(79,195,247,0.15)" onclick="event.stopPropagation()">
+            <div class="prog-body-inner">
+              <div class="pb-tabs">
+                <button class="pb-tab active" style="background:var(--elec);color:var(--void)" onclick="pbTab(event,'end','train')">Training</button>
+                <button class="pb-tab" onclick="pbTab(event,'end','nut')">Nutrition</button>
+                <button class="pb-tab" onclick="pbTab(event,'end','ov')">Overview</button>
+              </div>
+              <div class="pb-content active" data-p="end" data-t="train">
+                <div class="day-list">
+                  <div class="day-row"><div class="day-n" style="color:var(--elec)">D1</div><div class="day-info"><div class="day-name">Zone 2 Cardio + Legs</div><div class="day-ex">45 min run (Zone 2) · Lunges · Step-Ups · Calf Raises</div></div><div class="day-badge" style="background:rgba(79,195,247,0.08);color:var(--elec);border:1px solid rgba(79,195,247,0.2)">Cardio</div></div>
+                  <div class="day-row"><div class="day-n" style="color:var(--elec)">D2</div><div class="day-info"><div class="day-name">Upper Body Endurance</div><div class="day-ex">Push-Ups · Rows · OHP · High-rep circuits</div></div><div class="day-badge" style="background:rgba(79,195,247,0.08);color:var(--elec);border:1px solid rgba(79,195,247,0.2)">Strength</div></div>
+                  <div class="day-row"><div class="day-n" style="color:var(--elec)">D3</div><div class="day-info"><div class="day-name">HIIT Intervals</div><div class="day-ex">8 × 400m sprints · Active rest · 30-20-10 intervals</div></div><div class="day-badge" style="background:rgba(229,57,53,0.08);color:#EF5350;border:1px solid rgba(229,57,53,0.2)">HIIT</div></div>
+                  <div class="day-row"><div class="day-n" style="color:var(--elec)">D4</div><div class="day-info"><div class="day-name">Long Run</div><div class="day-ex">60–90 min steady pace · Zone 2 heart rate target</div></div><div class="day-badge" style="background:rgba(79,195,247,0.08);color:var(--elec);border:1px solid rgba(79,195,247,0.2)">Cardio</div></div>
+                </div>
+              </div>
+              <div class="pb-content" data-p="end" data-t="nut">
+                <div class="nt-list">
+                  <div class="nt-row"><div class="nt-icon">🔥</div><div class="nt-info"><div class="nt-name">Daily Calories</div><div class="nt-desc">Maintenance to slight surplus</div></div><div class="nt-val" style="color:var(--elec)">2,600</div></div>
+                  <div class="nt-row"><div class="nt-icon">🍚</div><div class="nt-info"><div class="nt-name">Carbohydrates</div><div class="nt-desc">Primary energy source</div></div><div class="nt-val" style="color:var(--amber)">400g</div></div>
+                  <div class="nt-row"><div class="nt-icon">🥩</div><div class="nt-info"><div class="nt-name">Protein</div><div class="nt-desc">Muscle repair and maintenance</div></div><div class="nt-val" style="color:var(--elec)">150g</div></div>
+                  <div class="nt-row"><div class="nt-icon">💧</div><div class="nt-info"><div class="nt-name">Water + Electrolytes</div><div class="nt-desc">Critical for endurance performance</div></div><div class="nt-val" style="color:var(--purple)">4L+</div></div>
+                </div>
+              </div>
+              <div class="pb-content" data-p="end" data-t="ov">
+                <div class="ov-card"><div class="ov-label" style="color:var(--elec)">GOAL</div><div class="ov-text">Build cardiovascular endurance, increase VO2 max, and develop the ability to sustain effort over long periods.</div></div>
+                <div class="ov-card"><div class="ov-label" style="color:var(--elec)">REP RANGES</div><div class="ov-text">15–25 reps for strength circuits · Zone 2 cardio (60–70% max HR) · High frequency, moderate intensity</div></div>
+                <div class="ov-card"><div class="ov-label" style="color:var(--elec)">IDEAL FOR</div><div class="ov-text">Runners, cyclists, swimmers, and anyone wanting improved cardiovascular fitness and sustained performance.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. STRENGTH & POWER -->
+        <div class="prog-card" id="prog-str" onclick="toggleProg('str')">
+          <div class="prog-top" style="border-left:3px solid var(--red)">
+            <div class="prog-icon" style="background:rgba(229,57,53,0.12)">⚡</div>
+            <div class="prog-info">
+              <div class="prog-num" style="color:#EF5350">Program 03</div>
+              <div class="prog-name">STRENGTH & POWER</div>
+              <div class="prog-tagline">Lift heavy. Dominate your one-rep maxes.</div>
+            </div>
+            <div class="prog-arr" style="color:#EF5350">›</div>
+          </div>
+          <div class="prog-body" style="border-color:rgba(229,57,53,0.15)" onclick="event.stopPropagation()">
+            <div class="prog-body-inner">
+              <div class="pb-tabs">
+                <button class="pb-tab active" style="background:var(--red);color:#fff" onclick="pbTab(event,'str','train')">Training</button>
+                <button class="pb-tab" onclick="pbTab(event,'str','nut')">Nutrition</button>
+                <button class="pb-tab" onclick="pbTab(event,'str','ov')">Overview</button>
+              </div>
+              <div class="pb-content active" data-p="str" data-t="train">
+                <div class="day-list">
+                  <div class="day-row"><div class="day-n" style="color:#EF5350">D1</div><div class="day-info"><div class="day-name">Max Squat Day</div><div class="day-ex">Back Squat 5×5 · Front Squat · Box Squat · Leg Press</div></div><div class="day-badge" style="background:rgba(229,57,53,0.08);color:#EF5350;border:1px solid rgba(229,57,53,0.2)">Heavy</div></div>
+                  <div class="day-row"><div class="day-n" style="color:#EF5350">D2</div><div class="day-info"><div class="day-name">Max Bench Day</div><div class="day-ex">Bench 5×5 · Floor Press · Weighted Dips · Tricep Work</div></div><div class="day-badge" style="background:rgba(229,57,53,0.08);color:#EF5350;border:1px solid rgba(229,57,53,0.2)">Heavy</div></div>
+                  <div class="day-row"><div class="day-n" style="color:#EF5350">D3</div><div class="day-info"><div class="day-name">Deadlift Day</div><div class="day-ex">Conventional DL 5×3 · Romanian DL · Rack Pull</div></div><div class="day-badge" style="background:rgba(229,57,53,0.08);color:#EF5350;border:1px solid rgba(229,57,53,0.2)">Heavy</div></div>
+                  <div class="day-row"><div class="day-n" style="color:#EF5350">D4</div><div class="day-info"><div class="day-name">Explosive Power</div><div class="day-ex">Power Cleans · Box Jumps · Broad Jumps · Med Ball Slams</div></div><div class="day-badge" style="background:rgba(255,143,0,0.1);color:var(--amber);border:1px solid rgba(255,143,0,0.2)">Power</div></div>
+                </div>
+              </div>
+              <div class="pb-content" data-p="str" data-t="nut">
+                <div class="nt-list">
+                  <div class="nt-row"><div class="nt-icon">🔥</div><div class="nt-info"><div class="nt-name">Daily Calories</div><div class="nt-desc">High surplus to fuel heavy lifting</div></div><div class="nt-val" style="color:#EF5350">3,400+</div></div>
+                  <div class="nt-row"><div class="nt-icon">🥩</div><div class="nt-info"><div class="nt-name">Protein</div><div class="nt-desc">Muscle repair from heavy compound work</div></div><div class="nt-val" style="color:var(--elec)">200g</div></div>
+                  <div class="nt-row"><div class="nt-icon">🍚</div><div class="nt-info"><div class="nt-name">Carbohydrates</div><div class="nt-desc">Glycogen fuel for max effort sets</div></div><div class="nt-val" style="color:var(--amber)">380g</div></div>
+                  <div class="nt-row"><div class="nt-icon">⚡</div><div class="nt-info"><div class="nt-name">Creatine</div><div class="nt-desc">5g daily — proven for strength gains</div></div><div class="nt-val" style="color:var(--gold)">5g</div></div>
+                  <div class="nt-row"><div class="nt-icon">💧</div><div class="nt-info"><div class="nt-name">Water</div><div class="nt-desc">Joint health and performance</div></div><div class="nt-val" style="color:var(--purple)">4L</div></div>
+                </div>
+              </div>
+              <div class="pb-content" data-p="str" data-t="ov">
+                <div class="ov-card"><div class="ov-label" style="color:#EF5350">GOAL</div><div class="ov-text">Maximise raw strength through progressive overload, low rep heavy training, and explosive power development.</div></div>
+                <div class="ov-card"><div class="ov-label" style="color:#EF5350">REP RANGES</div><div class="ov-text">1–5 reps for max strength · 3–6 for power · 90–120 sec rest between heavy sets</div></div>
+                <div class="ov-card"><div class="ov-label" style="color:#EF5350">IDEAL FOR</div><div class="ov-text">Anyone wanting to increase squat, bench, and deadlift maxes. Powerlifters, strongmen, or anyone who wants to be genuinely strong.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. ATHLETES -->
+        <div class="prog-card" id="prog-ath" onclick="toggleProg('ath')">
+          <div class="prog-top" style="border-left:3px solid #66BB6A">
+            <div class="prog-icon" style="background:rgba(76,175,80,0.12)">🏆</div>
+            <div class="prog-info">
+              <div class="prog-num" style="color:#66BB6A">Program 04</div>
+              <div class="prog-name">ATHLETES</div>
+              <div class="prog-tagline">Sport-specific. Built for your game.</div>
+            </div>
+            <div class="prog-arr" style="color:#66BB6A">›</div>
+          </div>
+          <div class="prog-body" style="border-color:rgba(76,175,80,0.15)" onclick="event.stopPropagation()">
+            <div class="prog-body-inner">
+              <div style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#66BB6A;margin-bottom:12px">🏅 Choose Your Sport</div>
+              <div class="sports-grid">
+                <div class="sport-btn active" onclick="selectSport('football')"><div class="sport-em">⚽</div><div class="sport-nm">Football</div></div>
+                <div class="sport-btn" onclick="selectSport('basketball')"><div class="sport-em">🏀</div><div class="sport-nm">Basketball</div></div>
+                <div class="sport-btn" onclick="selectSport('tennis')"><div class="sport-em">🎾</div><div class="sport-nm">Tennis</div></div>
+                <div class="sport-btn" onclick="selectSport('swimming')"><div class="sport-em">🏊</div><div class="sport-nm">Swimming</div></div>
+                <div class="sport-btn" onclick="selectSport('mma')"><div class="sport-em">🥊</div><div class="sport-nm">MMA</div></div>
+                <div class="sport-btn" onclick="selectSport('track')"><div class="sport-em">🏃</div><div class="sport-nm">Track</div></div>
+              </div>
+
+              <div class="sport-detail active" id="sport-football"><div class="sd-title">⚽ Football Training Program</div><div class="sd-items"><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>3× Sprint & Agility Sessions / week</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>2× Lower Body Strength — Squat, Lunge, RDL</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Explosive Jump Training — Box Jumps, Jump Squats</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Core stability — anti-rotation planks, pallof press</div><div class="sd-item"><div class="sd-dot" style="background:var(--gold)"></div>Nutrition: High carb on match days · Protein 1.8g/kg</div><div class="sd-item"><div class="sd-dot" style="background:var(--elec)"></div>APEX tracks sprint speed, agility, and VO2 max trends</div></div></div>
+              <div class="sport-detail" id="sport-basketball"><div class="sd-title">🏀 Basketball Training Program</div><div class="sd-items"><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Vertical jump training — depth drops, plyometrics</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Lateral speed & court agility drills ×3/week</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Upper body — shoulder stability, grip, push/pull balance</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Conditioning — full court intervals, HIIT circuits</div><div class="sd-item"><div class="sd-dot" style="background:var(--gold)"></div>Nutrition: Moderate carbs · High protein · Electrolytes</div><div class="sd-item"><div class="sd-dot" style="background:var(--elec)"></div>APEX tracks jump height and heart rate zones</div></div></div>
+              <div class="sport-detail" id="sport-tennis"><div class="sd-title">🎾 Tennis Training Program</div><div class="sd-items"><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Rotational core power — cable twists, med ball throws</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Wrist & forearm strengthening — injury prevention</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Shoulder external rotation work — rotator cuff care</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Court movement drills — split-step, shuffle, recovery</div><div class="sd-item"><div class="sd-dot" style="background:var(--gold)"></div>Nutrition: Energy gels on court · Antioxidants daily</div><div class="sd-item"><div class="sd-dot" style="background:var(--elec)"></div>APEX monitors shoulder joint health and flags overuse risk</div></div></div>
+              <div class="sport-detail" id="sport-swimming"><div class="sd-title">🏊 Swimming Training Program</div><div class="sd-items"><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Shoulder mobility & overhead strength — lat pulldowns</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Core anti-rotation and streamline stability</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Ankle flexibility & kick power development</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Breath control and lung capacity training</div><div class="sd-item"><div class="sd-dot" style="background:var(--gold)"></div>Nutrition: Carb-forward · High calorie burn · 3,200 kcal</div><div class="sd-item"><div class="sd-dot" style="background:var(--elec)"></div>APEX tracks lap times, stroke efficiency, recovery rate</div></div></div>
+              <div class="sport-detail" id="sport-mma"><div class="sd-title">🥊 MMA Training Program</div><div class="sd-items"><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Explosive striking power — med ball slams, rotational press</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Grappling strength — neck, grip, posterior chain</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Conditioning: AMRAP circuits, 5-min round intervals</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Mobility — hip opening, thoracic rotation daily</div><div class="sd-item"><div class="sd-dot" style="background:var(--gold)"></div>Nutrition: Weight class management · High protein</div><div class="sd-item"><div class="sd-dot" style="background:var(--elec)"></div>APEX monitors round-by-round heart rate output</div></div></div>
+              <div class="sport-detail" id="sport-track"><div class="sd-title">🏃 Track & Field Program</div><div class="sd-items"><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Sprint mechanics — drive phase, top speed, deceleration</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Plyometric power — bounding, depth jumps, hurdle hops</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Hip flexor and glute max strength for sprint power</div><div class="sd-item"><div class="sd-dot" style="background:#66BB6A"></div>Block starts and reaction training</div><div class="sd-item"><div class="sd-dot" style="background:var(--gold)"></div>Nutrition: Fast carbs pre-race · Lean protein daily</div><div class="sd-item"><div class="sd-dot" style="background:var(--elec)"></div>APEX tracks reaction time, stride rate, speed gains</div></div></div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div style="height:28px"></div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━ COACH ━━━━━━━━━━━━━━ -->
+  <div id="screen-coach" class="screen">
+    <div class="cowrap">
+      <div class="cobanner">
+        <div class="cotop">
+          <div class="pill pl-gold" style="font-size:10px;padding:3px 10px"><div class="ldot"></div>&nbsp;Online</div>
+          <div class="coname">⚡ APEX COACH</div>
+        </div>
+        <div class="cosub">AI-Powered &nbsp;·&nbsp; Knows Your Full Profile</div>
+      </div>
+      <div class="cmsgs" id="cmsgs">
+        <div class="msg bot rv" style="--d:0s"><div class="mw">APEX Coach</div><div class="mb2">Hey James 👊 You crushed it yesterday — bench hit a new PR at <span class="hl">82.5 kg</span>.<br><br>Today is Push Day A. Your <span class="hl">left elbow flares</span> on bench — check Form Tracker before your session. Lock in. 🔒</div></div>
+        <div class="msg user rv" style="--d:0.08s"><div class="mw">You</div><div class="mb2">What should I eat before training today?</div></div>
+        <div class="msg bot rv" style="--d:0.16s"><div class="mw">APEX Coach</div><div class="mb2">For your 6 PM session, eat this <span class="hl">60–90 min before</span>:<br><br>🍚 &nbsp;150g white rice<br>🍗 &nbsp;120g chicken breast<br>🍌 &nbsp;1 banana<br><br>~580 kcal. Strong carb-to-protein ratio — optimal for hypertrophy. Keep fat low pre-training. Drink <span class="hl">500ml water</span> beforehand 💧</div></div>
+      </div>
+      <div class="qarea">
+        <div class="qc" onclick="chip(this)">💊 Vitamins</div>
+        <div class="qc" onclick="chip(this)">😴 Recovery</div>
+        <div class="qc" onclick="chip(this)">📈 Progress</div>
+        <div class="qc" onclick="chip(this)">🦵 Squat Form</div>
+        <div class="qc" onclick="chip(this)">🔥 Fat Loss</div>
+        <div class="qc" onclick="chip(this)">💧 Hydration</div>
+        <div class="qc" onclick="chip(this)">🧬 Body Type</div>
+        <div class="qc" onclick="chip(this)">🏃 Cardio?</div>
+      </div>
+      <div class="cbar">
+        <input class="cin" id="cin" placeholder="Ask your coach…" onkeydown="hk(event)"/>
+        <div class="csend" onclick="sm()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━ PROFILE ━━━━━━━━━━━━━━ -->
+  <div id="screen-profile" class="screen">
+    <div class="phero rv" style="--d:0s">
+      <div class="pav">JD</div>
+      <div class="pname">JAMES DUNMORE</div>
+      <div class="pill pl-gold" style="font-size:11px">🎯 Hypertrophy + Fat Loss</div>
+      <div class="psr">
+        <div class="ps"><div class="psv">82 kg</div><div class="psl">Weight</div></div>
+        <div class="ps"><div class="psv">178 cm</div><div class="psl">Height</div></div>
+        <div class="ps"><div class="psv">14.2%</div><div class="psl">Body Fat</div></div>
+        <div class="ps"><div class="psv">24.3</div><div class="psl">BMI</div></div>
+      </div>
+    </div>
+    <div style="padding-top:18px">
+      <div class="sg rv" style="--d:0.06s">
+        <div class="sgl">🏋️ Training</div>
+        <div class="sr"><div class="si" style="background:rgba(201,168,76,0.1)">🎯</div><div class="sn">Goal</div><div class="sv">Hypertrophy + Fat Loss</div><div class="sa">›</div></div>
+        <div class="sr"><div class="si" style="background:rgba(79,195,247,0.08)">🌍</div><div class="sn">Genetics / Origin</div><div class="sv">West African</div><div class="sa">›</div></div>
+        <div class="sr"><div class="si" style="background:rgba(255,143,0,0.1)">📸</div><div class="sn">Progress Photos</div><div class="sv">4 uploaded</div><div class="sa">›</div></div>
+      </div>
+      <div class="sg rv" style="--d:0.10s">
+        <div class="sgl">⚙️ Tracking</div>
+        <div class="sr"><div class="si" style="background:rgba(229,57,53,0.1)">❤️</div><div class="sn">Heart Rate (Camera)</div><div style="flex:1"></div><div class="tog" onclick="this.classList.toggle('off')"></div></div>
+        <div class="sr"><div class="si" style="background:rgba(201,168,76,0.1)">🔔</div><div class="sn">Coach Notifications</div><div style="flex:1"></div><div class="tog" onclick="this.classList.toggle('off')"></div></div>
+        <div class="sr"><div class="si" style="background:rgba(79,195,247,0.08)">🎥</div><div class="sn">AI Form Tracking</div><div style="flex:1"></div><div class="tog" onclick="this.classList.toggle('off')"></div></div>
+      </div>
+      <div class="sg rv" style="--d:0.14s">
+        <div class="sgl">🛠️ App</div>
+        <div class="sr"><div class="si" style="background:rgba(255,255,255,0.04)">⚙️</div><div class="sn">Units & Preferences</div><div style="flex:1"></div><div class="sa">›</div></div>
+        <div class="sr" style="margin-bottom:28px"><div class="si" style="background:rgba(229,57,53,0.1)">🚪</div><div class="sn" style="color:var(--red)">Sign Out</div><div style="flex:1"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bnav">
+    <button class="bt active" onclick="switchTab('dashboard',this)"><div class="bt-i">🏠</div><div class="bt-l">Home</div><div class="bt-line"></div></button>
+    <button class="bt" onclick="switchTab('form',this)"><div class="bt-i">📷</div><div class="bt-l">Form</div><div class="bt-line"></div></button>
+    <button class="bt" onclick="switchTab('nutrition',this)"><div class="bt-i">🥗</div><div class="bt-l">Fuel</div><div class="bt-line"></div></button>
+    <button class="bt" onclick="switchTab('programs',this)"><div class="bt-i">🏋️</div><div class="bt-l">Programs</div><div class="bt-line"></div></button>
+    <button class="bt" onclick="switchTab('coach',this)" style="position:relative"><div class="bt-i">🤖</div><div class="bt-l">Coach</div><div class="bt-line"></div><div class="bt-pip"></div></button>
+    <button class="bt" onclick="switchTab('profile',this)"><div class="bt-i">👤</div><div class="bt-l">Me</div><div class="bt-line"></div></button>
+  </nav>
+
+</div>
+
+<script>
+/* Navigation */
+function switchTab(id, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.bt').forEach(t => t.classList.remove('active'));
+  const sc = document.getElementById('screen-' + id);
+  sc.classList.add('active');
+  if (btn) btn.classList.add('active');
+  sc.querySelectorAll('.rv').forEach((el, i) => {
+    el.style.animation = 'none'; void el.offsetWidth;
+    el.style.setProperty('--d', (i * 0.05) + 's');
+    el.style.animation = '';
+  });
+  if (id === 'coach') { const p = document.querySelector('.bt-pip'); if(p) p.remove(); }
+}
+
+/* Form tracker */
+function startTracking() {
+  document.getElementById('camIdle').style.display = 'none';
+  document.getElementById('posew').style.display = 'flex';
+  document.getElementById('cscoreBar').style.display = 'flex';
+  document.getElementById('camScan').style.display = 'block';
+}
+
+function pickEx(el) {
+  document.querySelectorAll('.fex').forEach(r => r.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* Set results */
+function toggleSet(row) {
+  const was = row.classList.contains('exp');
+  document.querySelectorAll('.set-row').forEach(r => r.classList.remove('exp'));
+  if (!was) row.classList.add('exp');
+}
+
+/* Programs */
+function toggleProg(id) {
+  const card = document.getElementById('prog-' + id);
+  const was = card.classList.contains('open');
+  document.querySelectorAll('.prog-card').forEach(c => c.classList.remove('open'));
+  if (!was) card.classList.add('open');
+}
+
+function pbTab(e, prog, tab) {
+  e.stopPropagation();
+  const card = document.getElementById('prog-' + prog);
+  const cols = {hyp:[var1='var(--gold)','var(--void)'], end:['var(--elec)','var(--void)'], str:['var(--red)','#fff'], ath:['#4CAF50','var(--void)']};
+  card.querySelectorAll('.pb-tab').forEach(t => { t.classList.remove('active'); t.style.background=''; t.style.color=''; });
+  card.querySelectorAll('.pb-content').forEach(c => c.classList.remove('active'));
+  const btn = e.currentTarget;
+  btn.classList.add('active');
+  const c = cols[prog];
+  if(c){ btn.style.background = c[0]; btn.style.color = c[1]; }
+  const content = card.querySelector(`[data-p="${prog}"][data-t="${tab}"]`);
+  if(content) content.classList.add('active');
+}
+
+/* Athlete sport selector */
+function selectSport(sport) {
+  document.querySelectorAll('.sport-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sport-detail').forEach(d => d.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  const d = document.getElementById('sport-' + sport);
+  if(d) d.classList.add('active');
+}
+
+/* Coach chat */
+const replies = {
+  '💊 Vitamins':'For today 💊:<br><br>☀️ <span class="hl">Vitamin D3 5,000 IU</span> — with breakfast<br>🐟 <span class="hl">Omega-3 2g</span> — with any meal<br>⚡ <span class="hl">Creatine 5g</span> — post-workout<br>🌙 <span class="hl">Magnesium 400mg</span> — before bed',
+  '😴 Recovery':'Recovery is where muscle is built 🧱<br><br>• <span class="hl">7–9 hours</span> sleep tonight<br>• Room at <span class="hl">~18°C</span> for deeper sleep<br>• No screens 45 min before bed<br>• 10-min stretch post-session',
+  '📈 Progress':"18-day report 📊:<br><br>🏆 Bench <span class='hl'>+7.5 kg</span><br>⚖️ Weight <span class='hl'>+3.2 kg</span><br>🔬 Body fat <span class='hl'>−0.8%</span><br>🎯 Adherence <span class='hl'>87%</span><br><br>You're ahead of schedule. Lock in 🔒",
+  '🦵 Squat Form':"Squat accuracy: <span class='hl'>71%</span>.<br><br>🔴 Knee valgus collapse on descent<br>🔴 Excessive forward lean<br><br>Fix: <span class='hl'>Box squats at 60%</span> for 2 weeks. Banded clamshells pre-session to activate glutes.",
+  '🔥 Fat Loss':"You're in a <span class='hl'>~300 kcal deficit</span>.<br><br>• <span class='hl'>20-min LISS cardio</span> on rest days<br>• Keep protein at <span class='hl'>220g/day</span><br>• Sleep 8h — cortisol destroys fat metabolism 🔥",
+  '💧 Hydration':"At <span class='hl'>2.1 L / 3.5 L</span> 💧<br><br>Drink 500ml now before training. Dehydration of just 2% cuts strength by up to <span class='hl'>5%</span>. Add sea salt post-workout for electrolytes 🧂",
+  '🧬 Body Type':"<span class='hl'>Mesomorph-dominant</span> with fast-twitch advantage. West African heritage means stronger explosive fibres — ideal for hypertrophy and power. Your program is built around this genetic edge.",
+  '🏃 Cardio?':"<span class='hl'>Hypertrophy-first</span> right now. Too much cardio will eat gains.<br><br>Optimal: <span class='hl'>2 × 20 min LISS</span> per week on rest days at Zone 2. Burns fat without interfering with muscle protein synthesis."
+};
+
+function chip(el){ const t=el.textContent.trim(); addMsg('user','You',t); typing(t); }
+function hk(e){ if(e.key==='Enter') sm(); }
+function sm(){ const el=document.getElementById('cin'); const t=el.value.trim(); if(!t)return; addMsg('user','You',t); el.value=''; typing(t); }
+function typing(q){
+  const body=document.getElementById('cmsgs');
+  const el=document.createElement('div');
+  el.className='msg bot rv'; el.style.setProperty('--d','0s');
+  el.innerHTML='<div class="mw">APEX COACH</div><div class="tbub"><div class="td"></div><div class="td"></div><div class="td"></div></div>';
+  body.appendChild(el); body.scrollTop=body.scrollHeight;
+  setTimeout(()=>{ el.remove(); addMsg('bot','APEX COACH',replies[q]||"Good question. Based on your profile — stay consistent with your program. Your numbers are tracking strong. 💪"); },1600);
+}
+function addMsg(type,who,html){
+  const body=document.getElementById('cmsgs');
+  const el=document.createElement('div');
+  el.className=`msg ${type} rv`; el.style.setProperty('--d','0s');
+  el.innerHTML=`<div class="mw">${who}</div><div class="mb2">${html}</div>`;
+  body.appendChild(el); body.scrollTop=body.scrollHeight;
+}
+
+/* Init animations */
+document.querySelectorAll('.rv').forEach((el,i)=>{
+  if(!el.style.getPropertyValue('--d')) el.style.setProperty('--d',(i*0.05)+'s');
+  el.style.animationDelay='var(--d)';
+});
+
+/* Register Service Worker for PWA */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').then(()=>{
+      console.log('APEX SW registered');
+    }).catch(err=>console.log('SW error:',err));
+  });
+}
+</script>
+</body>
+</html>
